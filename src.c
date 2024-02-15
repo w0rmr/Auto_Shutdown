@@ -1,25 +1,25 @@
-#include"auto_shut.h"
+#include "auto_shut.h"
 
 data *d;
 
-int err(int type)
+void err(int type) 
 {
-    if(type == OPTION)
-        write(2,OPTION_ERR,strlen(OPTION_ERR));
-    else if(type == ARG)
-        write(2,ARG_ERR,strlen(ARG_ERR));
-    write(2,"\n",1);
-    exit(1);
+    if (type == OPTION)
+        write(2, OPTION_ERR, strlen(OPTION_ERR));
+    else if (type == ARG)
+        write(2, ARG_ERR, strlen(ARG_ERR));
+    write(2, "\n", 1);
+    exit(EXIT_FAILURE);
 }
 
-int check(int ac , char **av)
+void check(int ac, char **av) 
 {
-    if(ac < 2)
+    if (ac < 2) 
     {
         puts(USAGE);
-        exit(0);
+        exit(EXIT_SUCCESS);
     }
-    else if((av[1] && av[1][0] != '-' )  || strlen(av[1]) > 2)
+    else if ((av[1] && av[1][0] != '-') || strlen(av[1]) > 2)
         err(OPTION);
     if(av[1][1] == 'h')
         d->option = HELP;
@@ -29,38 +29,30 @@ int check(int ac , char **av)
         d->option = REB;
     else if(av[1][1] == 's')
         d->option = SHUT;
-    else 
-        err(OPTION);
-    if(!strcmp(av[2],"-at"))
+    if (!strcmp(av[2], "-at")) 
     {
         d->second_option = AT;
-        if (sscanf(av[3],"%d:%d",&d->hours,&d->minutes) != 2) 
+        if (sscanf(av[3], "%d:%d", &d->hours, &d->minutes) != 2) 
         {
-        write(2, "Invalid time format. Please use HH:MM\n",39);
-        exit(EXIT_FAILURE);
-        }
-    }
-    else if(!strcmp(av[2],"-X"))
-    {
-        d->option = X;
-        if (sscanf(av[3],"%d",&d->time) != 2) 
-        {
-            write(2, "Invalid time format. Please use integer format like 69\n",56);
+            write(2, "Invalid time format. Please use HH:MM\n", 39);
             exit(EXIT_FAILURE);
         }
-    }
-    exit(0);
-    return 0;
-} 
+    } 
+    else if (!strcmp(av[2], "-X")) 
+    {
+        d->second_option = X;
+        if (sscanf(av[3], "%d", &d->time) != 1) 
+        {
+            write(2, "Invalid time format. Please use integer format like 69\n", 56);
+            exit(EXIT_FAILURE);
+        }
+        d->time *= 60;
+    } 
 
-int shut_down(char **av)
-{
-    sleep(d->time * 60);
-    printf("shutdown !?\n");
-    return 0;
+    
 }
 
-void sleep_tal()
+void sleep_tal() 
 {
     while (1) 
     {
@@ -72,42 +64,63 @@ void sleep_tal()
     }
 }
 
-int reboot_(char **av)
+void shut_down() 
 {
-    if(d->option == X)
+
+    if (d->second_option == X)
         sleep(d->time);
-    else if(d->option == AT)
+    else if (d->second_option == AT)
         sleep_tal();
-    if(reboot(RB_POWER_OFF) == -1)
+    printf("Shutdown!\n");
+}
+
+void reboot_() 
+{
+    if (d->second_option == X)
+        sleep(d->time);
+    else if (d->second_option == AT)
+        sleep_tal();
+
+    if (reboot(RB_POWER_OFF) == -1) 
     {
-        if(system("shutdown now") == -1)
-            puts("failed :( \n try to run the program as root");
+        if (system("shutdown now") == -1)
+            puts("Failed :( \nTry to run the program as root");
     }
-    return 0;
 }
 
-int lock(char **av)
+void lock() 
 {
-    if(d->option == X)
+    if (d->second_option == X)
         sleep(d->time);
-    else if(d->option == AT)
+    else if (d->second_option == AT)
         sleep_tal();
-    if(system("xdg-screensaver lock") == -1)
-        puts("failed :( \n try to run the program as root");
 
-    return 0;
+    if (system("xdg-screensaver lock") == -1)
+        puts("Failed :( \nTry to run the program as root");
 }
 
-int main(int ac , char **av)
+int main(int ac, char **av) 
 {
     d = malloc(sizeof(data));
-    check(ac,av);
-    if(d->option == HELP)
-        puts(help);
-    else if (d->option == SHUT)
-        shut_down(av);
-    else if(d->option == LOCK)
-        lock(av);
-    else if(d->option == REB)
-        reboot_(av);
+    check(ac, av);
+    printf("PROGRAM\n");
+    switch (d->option) 
+    {
+        case HELP:
+            puts(help);
+            break;
+        case SHUT:
+            shut_down();
+            break;
+        case LOCK:
+            lock();
+            break;
+        case REB:
+            reboot_();
+            break;
+        default:
+            err(OPTION);
+    }
+    free(d);
+    return 0;
 }
