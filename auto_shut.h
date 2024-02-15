@@ -15,9 +15,9 @@
 #define OPTION_ERR "Err:\n invalid option !"
 #define ARG_ERR "Err:\n invalid arg !"
 #define HELP 0
-#define SHUT 1
+#define SHUT RB_POWER_OFF
 #define LOCK 2
-#define REB 3
+#define REB RB_AUTOBOOT
 #define AT 1
 #define X 2
 #define N 3

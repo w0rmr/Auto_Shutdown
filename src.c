@@ -64,27 +64,30 @@ void sleep_tal()
     }
 }
 
-void shut_down() 
-{
-
-    if (d->second_option == X)
-        sleep(d->time);
-    else if (d->second_option == AT)
-        sleep_tal();
-    printf("Shutdown!\n");
-}
-
 void reboot_() 
 {
     if (d->second_option == X)
         sleep(d->time);
     else if (d->second_option == AT)
         sleep_tal();
-
-    if (reboot(RB_POWER_OFF) == -1) 
-    {
-        if (system("shutdown now") == -1)
-            puts("Failed :( \nTry to run the program as root");
+    if (reboot(d->option) == -1) 
+    {   
+        if(d->option == SHUT)
+        {
+            if (system("shutdown now") == -1)
+            {
+                write(2,"Failed :( \nTry to run the program as root",42);
+                exit(EXIT_FAILURE);
+            }
+        }
+        else if(d->option == REB)
+        {
+            if (system("reboot") == -1)
+            {
+                write(2,"Failed :( \nTry to run the program as root",42);
+                exit(EXIT_FAILURE);
+            }
+        }
     }
 }
 
@@ -103,14 +106,13 @@ int main(int ac, char **av)
 {
     d = malloc(sizeof(data));
     check(ac, av);
-    printf("PROGRAM\n");
     switch (d->option) 
     {
         case HELP:
             puts(help);
             break;
         case SHUT:
-            shut_down();
+            reboot_();
             break;
         case LOCK:
             lock();
