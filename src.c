@@ -48,8 +48,13 @@ void check(int ac, char **av)
         }
         d->time *= 60;
     } 
-
-    
+    else if(!strcmp(av[2],"-now") || !av[2])
+    {
+        d->second_option = N;
+        d->time = 0;
+    }
+    else
+        err(OPTION);
 }
 
 void sleep_tal() 
