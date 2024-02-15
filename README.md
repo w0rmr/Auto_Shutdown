@@ -26,6 +26,6 @@ Time Specification:
         -X for X minutes from now
         -at for a specific 24-hour time (e.g., 18:30)
 ## Install
-
-chmod +X install.sh
-./install.sh
+    chmod +X install.sh
+    ./install.sh
+       
