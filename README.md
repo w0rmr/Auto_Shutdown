@@ -18,6 +18,8 @@ Options:
     -s, --shutdown: Schedule a system shutdown
     -l, --lock: Lock the screen
     -r, --reboot: Schedule a system reboot
+    -o, --log out
+    -f, --suspend
 
 Time Specification:
 
