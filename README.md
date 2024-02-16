@@ -3,7 +3,7 @@
 Simple C program for scheduling system shutdowns, reboots, or screen locks on Linux systems.
 
 ## Features
-- detect mouse mouvment / key press
+- detect mouse movement / key press
 - Schedule shutdowns, reboots, or screen locks
 - Flexible time specification options
 
