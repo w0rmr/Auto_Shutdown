@@ -22,7 +22,10 @@ void check(int ac, char **av)
     else if ((av[1] && av[1][0] != '-') || strlen(av[1]) > 2)
         err(OPTION);
     if(av[1][1] == 'h')
+    {
         d->option = HELP;
+        return;
+    }
     else if(av[1][1] == 'l')
         d->option = LOCK;
     else if(av[1][1] == 'r')
