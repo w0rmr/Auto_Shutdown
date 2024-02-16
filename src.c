@@ -32,6 +32,10 @@ void check(int ac, char **av)
         d->option = REB;
     else if(av[1][1] == 's')
         d->option = SHUT;
+    else if(av[1][1] == 'f')
+        d->option = SUS;
+    else if(av[1][1] = 'o')
+        d->option = LO;
     if (!strcmp(av[2], "-at")) 
     {
         d->second_option = AT;
@@ -72,6 +76,15 @@ void sleep_tal()
     }
 }
 
+void log_out()
+{
+    if (d->second_option == X)
+        sleep(d->time);
+    else if (d->second_option == AT)
+        sleep_tal();
+        if (system("pkill -KILL -u $(whoami)") == -1)
+        puts("Failed :( \nTry to run the program as root");
+}
 void reboot_() 
 {
     if (d->second_option == X)
@@ -126,6 +139,12 @@ int main(int ac, char **av)
             lock();
             break;
         case REB:
+            reboot_();
+            break;
+        case SUS:
+            reboot_();
+            break;
+        case LO:
             reboot_();
             break;
         default:

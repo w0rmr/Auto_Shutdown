@@ -17,6 +17,8 @@
 #define HELP 0
 #define SHUT RB_POWER_OFF
 #define LOCK 2
+#define SUS RB_SW_SUSPEND
+#define LO 10
 #define REB RB_AUTOBOOT
 #define AT 1
 #define X 2
@@ -29,6 +31,8 @@ Options:\n\
   -s, --shutdown    Schedule a system shutdown after the specified time\n\
   -l, --lock        Lock the screen\n\
   -r, --reboot      Schedule a system reboot after the specified time\n\
+  -o, --log out     log out after specified time\
+  -f  --suspend     suspend after specified time\
 \n\
   Specifed TIME format:\n\
   \n\
