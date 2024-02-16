@@ -22,7 +22,7 @@
 #define X 2
 #define N 3
 #define help "\
-Usage: myshutdown [OPTION] [TIME]\n\
+Usage: auto_shut [OPTION] [TIME]\n\
 \n\
 Options:\n\
   -h, --help        Display this help message and exit\n\
