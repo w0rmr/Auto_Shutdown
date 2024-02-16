@@ -1,4 +1,4 @@
-gcc -o "auto_shut" "src.c"
+gcc -o "auto_shut" "src.c" -lX11 
 
 if [ "$?" -ne 0 ]; then
     echo "Compilation failed->"

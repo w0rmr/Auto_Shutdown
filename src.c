@@ -12,6 +12,8 @@ void err(int type)
     exit(EXIT_FAILURE);
 }
 
+
+
 void check(int ac, char **av) 
 {
     if (ac < 2) 
@@ -36,12 +38,9 @@ void check(int ac, char **av)
         d->option = SUS;
     else if(av[1][1] = 'o')
         d->option = LO;
-    
+    d->time = 0;
     if(!av[2] ||!strcmp(av[2],"-now") )
-    {
         d->second_option = N;
-        d->time = 0;
-    }
     else if (!strcmp(av[2], "-at")) 
     {
         d->second_option = AT;
@@ -60,9 +59,44 @@ void check(int ac, char **av)
             exit(EXIT_FAILURE);
         }
         d->time *= 60;
-    } 
+    }
+    else if(!strcmp(av[2],"-D"))
+        d->second_option = DETECT;
     else
         err(OPTION);
+    
+}
+void detect() 
+{
+    Display *display;
+    Window root;
+    XEvent ev;
+    char buf[32];
+    display = XOpenDisplay(NULL);
+    if (!display) 
+    {
+        write(2,"Unable to open display\n",24);
+        exit(0);
+    }
+    root = DefaultRootWindow(display);
+    XSelectInput(display, root, KeyPressMask | PointerMotionMask);
+    XGrabKeyboard(display, root, True, GrabModeAsync, GrabModeAsync, CurrentTime);
+    XGrabPointer(display, root, True, PointerMotionMask, GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
+    while (1) 
+    {
+        XNextEvent(display, &ev);
+        if (ev.type == KeyPress)
+        {
+            KeySym key;
+            XLookupString(&ev.xkey, buf, sizeof(buf), &key, NULL);
+            if (buf[0] == 'q')
+                exit(0);
+            break;
+        }
+        else if (ev.type == MotionNotify) 
+            break;
+    }
+    XCloseDisplay(display);
 }
 
 void sleep_tal() 
@@ -83,7 +117,9 @@ void log_out()
         sleep(d->time);
     else if (d->second_option == AT)
         sleep_tal();
-        if (system("pkill -KILL -u $(whoami)") == -1 )
+    else if(d->second_option == DETECT)
+        detect();
+    if (system("pkill -KILL -u $(whoami)") == -1 )
         puts("Failed :( \nTry to run the program as root");
 }
 
@@ -93,7 +129,9 @@ void suspend()
         sleep(d->time);
     else if (d->second_option == AT)
         sleep_tal();
-        if ( system("systemctl suspend") == -1 )
+    else if(d->second_option == DETECT)
+        detect();
+    if ( system("systemctl suspend") == -1 )
         puts("Failed :( \nTry to run the program as root");
 }
 
@@ -103,6 +141,8 @@ void reboot_()
         sleep(d->time);
     else if (d->second_option == AT)
         sleep_tal();
+    else if(d->second_option == DETECT)
+        detect();
     if (reboot(d->option) == -1) 
     {   
         if(d->option == SHUT)
@@ -124,13 +164,16 @@ void reboot_()
     }
 }
 
+
+
 void lock() 
 {
     if (d->second_option == X)
         sleep(d->time);
     else if (d->second_option == AT)
         sleep_tal();
-
+    else if(d->second_option == DETECT)
+        detect();
     if (system("xdg-screensaver lock") == -1)
         puts("Failed :( \nTry to run the program as root");
 }

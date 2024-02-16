@@ -7,6 +7,8 @@
 #include "string.h"
 #include "stdlib.h"
 #include <time.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
 
 
 #define USAGE "<usage> auto_shutdown \"option\" \"args\" \n auto_shutdown -h for help" 
@@ -23,6 +25,7 @@
 #define AT 1
 #define X 2
 #define N 3
+#define DETECT 4 
 #define help "\
 Usage: auto_shut [OPTION] [TIME]\n\
 \n\
@@ -40,12 +43,15 @@ Options:\n\
   \"-now\" for immediate action,\n\
   \"-X\" for X minutes from now,\n\
   \"-at\" for a specific time on the 24-hour clock (e.g., \"18:30\").\n\
+  Mouse and keys detection \n\
+    -D\n\
 \n\
 Examples:\n\
-  myshutdown -s -X 30      # Shutdown the system in 30 minutes\n\
-  myshutdown -r -at 18:00  # Schedule a system reboot at 18:00\n\
-  myshutdown -l            # Lock the screen now \"the default therd option is -now\"\n\
-  myshutdown -h        # Display this help message\n\
+  auto_shut -s -X 30      # Shutdown the system in 30 minutes\n\
+  auto_shut -r -at 18:00  # Schedule a system reboot at 18:00\n\
+  auto_shut -l            # Lock the screen now \"the default therd option is -now\"\n\
+  auto_shut -l  -D        # Lock the screen if a key press or mouse movement is detected\"\n\
+  auto_shut -h            # Display this help message\n\
 \n\
 Note: Administrative privileges may be required for shutdown and reboot operations.\n"
 typedef struct data {
