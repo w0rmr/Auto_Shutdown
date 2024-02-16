@@ -36,7 +36,13 @@ void check(int ac, char **av)
         d->option = SUS;
     else if(av[1][1] = 'o')
         d->option = LO;
-    if (!strcmp(av[2], "-at")) 
+    
+    if(!av[2] ||!strcmp(av[2],"-now") )
+    {
+        d->second_option = N;
+        d->time = 0;
+    }
+    else if (!strcmp(av[2], "-at")) 
     {
         d->second_option = AT;
         if (sscanf(av[3], "%d:%d", &d->hours, &d->minutes) != 2) 
@@ -55,11 +61,6 @@ void check(int ac, char **av)
         }
         d->time *= 60;
     } 
-    else if(!strcmp(av[2],"-now") || !av[2])
-    {
-        d->second_option = N;
-        d->time = 0;
-    }
     else
         err(OPTION);
 }
@@ -82,7 +83,7 @@ void log_out()
         sleep(d->time);
     else if (d->second_option == AT)
         sleep_tal();
-        if (system("pkill -KILL -u $(whoami)") == -1)
+        if (system("pkill -KILL -u $(whoami)") == -1 )
         puts("Failed :( \nTry to run the program as root");
 }
 void reboot_() 
@@ -145,7 +146,7 @@ int main(int ac, char **av)
             reboot_();
             break;
         case LO:
-            reboot_();
+            log_out();
             break;
         default:
             err(OPTION);
