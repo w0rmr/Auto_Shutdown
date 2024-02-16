@@ -3,7 +3,7 @@
 Simple C program for scheduling system shutdowns, reboots, or screen locks on Linux systems.
 
 ## Features
-
+- detect mouse mouvment / key press
 - Schedule shutdowns, reboots, or screen locks
 - Flexible time specification options
 
@@ -27,6 +27,10 @@ Time Specification:
         -now for immediate action
         -X for X minutes from now
         -at for a specific 24-hour time (e.g., 18:30)
+Detection:
+
+    detect mouse and keys:
+        -D
 ## Install
     chmod +X install.sh
     ./install.sh
