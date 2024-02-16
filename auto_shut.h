@@ -50,7 +50,7 @@ Examples:\n\
   auto_shut -s -X 30      # Shutdown the system in 30 minutes\n\
   auto_shut -r -at 18:00  # Schedule a system reboot at 18:00\n\
   auto_shut -l            # Lock the screen now \"the default therd option is -now\"\n\
-  auto_shut -l  -D        # Lock the screen if a key press or mouse movement is detected\"\n\
+  auto_shut -l  -D        # Lock the screen if a key press or mouse movement is detected (press q to cancel) \"\n\
   auto_shut -h            # Display this help message\n\
 \n\
 Note: Administrative privileges may be required for shutdown and reboot operations.\n"
