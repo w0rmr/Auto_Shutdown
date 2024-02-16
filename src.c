@@ -86,6 +86,17 @@ void log_out()
         if (system("pkill -KILL -u $(whoami)") == -1 )
         puts("Failed :( \nTry to run the program as root");
 }
+
+void suspend()
+{
+    if (d->second_option == X)
+        sleep(d->time);
+    else if (d->second_option == AT)
+        sleep_tal();
+        if ( system("systemctl suspend") == -1 )
+        puts("Failed :( \nTry to run the program as root");
+}
+
 void reboot_() 
 {
     if (d->second_option == X)
@@ -143,7 +154,7 @@ int main(int ac, char **av)
             reboot_();
             break;
         case SUS:
-            reboot_();
+            suspend();
             break;
         case LO:
             log_out();

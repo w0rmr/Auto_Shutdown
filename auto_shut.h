@@ -31,8 +31,8 @@ Options:\n\
   -s, --shutdown    Schedule a system shutdown after the specified time\n\
   -l, --lock        Lock the screen\n\
   -r, --reboot      Schedule a system reboot after the specified time\n\
-  -o, --log out     log out after specified time\
-  -f  --suspend     suspend after specified time\
+  -o, --log out     log out after specified time\n\
+  -f  --suspend     suspend after specified time\n\
 \n\
   Specifed TIME format:\n\
   \n\
