@@ -21,7 +21,7 @@ void check(int ac, char **av)
         puts(USAGE);
         exit(EXIT_SUCCESS);
     }
-    else if ((av[1] && av[1][0] != '-') || strlen(av[1]) > 2)
+    else if ((av[1] && av[1][0] != '-') || strlen(av[1]) > 2 || av[1][1] == '\0')
         err(OPTION);
     if(av[1][1] == 'h')
     {
