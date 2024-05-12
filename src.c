@@ -9,6 +9,7 @@ void err(int type)
     else if (type == ARG)
         write(2, ARG_ERR, strlen(ARG_ERR));
     write(2, "\n", 1);
+    free(d);
     exit(EXIT_FAILURE);
 }
 
@@ -19,6 +20,7 @@ void check(int ac, char **av)
     if (ac < 2) 
     {
         puts(USAGE);
+        free(d);
         exit(EXIT_SUCCESS);
     }
     else if ((av[1] && av[1][0] != '-') || strlen(av[1]) > 2 || av[1][1] == '\0')
@@ -38,6 +40,13 @@ void check(int ac, char **av)
         d->option = SUS;
     else if(av[1][1] = 'o')
         d->option = LO;
+    else
+    {
+        write(2, "BAD TRIP !\n", 12);
+        free(d);
+        exit(EXIT_FAILURE);
+    }
+        
     d->time = 0;
     if(!av[2] ||!strcmp(av[2],"-now") )
         d->second_option = N;
@@ -46,6 +55,7 @@ void check(int ac, char **av)
         d->second_option = AT;
         if (sscanf(av[3], "%d:%d", &d->hours, &d->minutes) != 2) 
         {
+            free(d);
             write(2, "Invalid time format. Please use HH:MM\n", 39);
             exit(EXIT_FAILURE);
         }
@@ -55,6 +65,7 @@ void check(int ac, char **av)
         d->second_option = X;
         if (sscanf(av[3], "%d", &d->time) != 1) 
         {
+            free(d);
             write(2, "Invalid time format. Please use integer format like 69\n", 56);
             exit(EXIT_FAILURE);
         }
@@ -76,6 +87,7 @@ void detect()
     if (!display) 
     {
         write(2,"Unable to open display\n",24);
+        free(d);
         exit(0);
     }
     root = DefaultRootWindow(display);
@@ -150,6 +162,7 @@ void reboot_()
             if (system("shutdown now") == -1)
             {
                 write(2,"Failed :( \nTry to run the program as root",42);
+                free(d);
                 exit(EXIT_FAILURE);
             }
         }
@@ -158,6 +171,7 @@ void reboot_()
             if (system("reboot") == -1)
             {
                 write(2,"Failed :( \nTry to run the program as root",42);
+                free(d);
                 exit(EXIT_FAILURE);
             }
         }
