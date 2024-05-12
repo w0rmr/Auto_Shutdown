@@ -13,16 +13,17 @@ void err(int type)
     exit(EXIT_FAILURE);
 }
 
-
+void err_(char *s)
+{
+    free(d);
+    write(2,s,strlen(s));
+    exit(EXIT_FAILURE);
+}
 
 void check(int ac, char **av) 
 {
     if (ac < 2) 
-    {
-        puts(USAGE);
-        free(d);
-        exit(EXIT_SUCCESS);
-    }
+        err_(USAGE);
     else if ((av[1] && av[1][0] != '-') || strlen(av[1]) > 2 || av[1][1] == '\0')
         err(OPTION);
     if(av[1][1] == 'h')
@@ -41,12 +42,7 @@ void check(int ac, char **av)
     else if(av[1][1] = 'o')
         d->option = LO;
     else
-    {
-        write(2, "BAD TRIP !\n", 12);
-        free(d);
-        exit(EXIT_FAILURE);
-    }
-        
+        err_("BADTRIP\n");        
     d->time = 0;
     if(!av[2] ||!strcmp(av[2],"-now") )
         d->second_option = N;
@@ -54,21 +50,13 @@ void check(int ac, char **av)
     {
         d->second_option = AT;
         if (sscanf(av[3], "%d:%d", &d->hours, &d->minutes) != 2) 
-        {
-            free(d);
-            write(2, "Invalid time format. Please use HH:MM\n", 39);
-            exit(EXIT_FAILURE);
-        }
+            err_("Invalid time format. Please use HH:MM\n");
     } 
     else if (!strcmp(av[2], "-X")) 
     {
         d->second_option = X;
         if (sscanf(av[3], "%d", &d->time) != 1) 
-        {
-            free(d);
-            write(2, "Invalid time format. Please use integer format like 69\n", 56);
-            exit(EXIT_FAILURE);
-        }
+            err_("Invalid time format. Please use integer format like 69\n");
         d->time *= 60;
     }
     else if(!strcmp(av[2],"-D"))
@@ -85,11 +73,7 @@ void detect()
     char buf[32];
     display = XOpenDisplay(NULL);
     if (!display) 
-    {
-        write(2,"Unable to open display\n",24);
-        free(d);
-        exit(0);
-    }
+        err_("Unable to open display\n");
     root = DefaultRootWindow(display);
     XSelectInput(display, root, KeyPressMask | PointerMotionMask);
     XGrabKeyboard(display, root, True, GrabModeAsync, GrabModeAsync, CurrentTime);
@@ -123,7 +107,7 @@ void sleep_tal()
     }
 }
 
-void log_out()
+void action()
 {
     if (d->second_option == X)
         sleep(d->time);
@@ -131,49 +115,39 @@ void log_out()
         sleep_tal();
     else if(d->second_option == DETECT)
         detect();
+    else if(d->option == DETECT)
+        err_("LHERBA !!");
+}
+void log_out()
+{
+    action();
     if (system("pkill -KILL -u $(whoami)") == -1 )
-        puts("Failed :( \nTry to run the program as root");
+        err_("Failed :( \nTry to run the program as root\n");
 }
 
 void suspend()
 {
-    if (d->second_option == X)
-        sleep(d->time);
-    else if (d->second_option == AT)
-        sleep_tal();
-    else if(d->second_option == DETECT)
-        detect();
+    action();
     if ( system("systemctl suspend") == -1 )
-        puts("Failed :( \nTry to run the program as root");
+        err_("Failed :( \nTry to run the program as root\n");
+
 }
 
 void reboot_() 
 {
-    if (d->second_option == X)
-        sleep(d->time);
-    else if (d->second_option == AT)
-        sleep_tal();
-    else if(d->second_option == DETECT)
-        detect();
+    action();
     if (reboot(d->option) == -1) 
     {   
         if(d->option == SHUT)
         {
             if (system("shutdown now") == -1)
-            {
-                write(2,"Failed :( \nTry to run the program as root",42);
-                free(d);
-                exit(EXIT_FAILURE);
-            }
+                err_("Failed :( \nTry to run the program as root\n");
         }
         else if(d->option == REB)
         {
             if (system("reboot") == -1)
-            {
-                write(2,"Failed :( \nTry to run the program as root",42);
-                free(d);
-                exit(EXIT_FAILURE);
-            }
+                err_("Failed :( \nTry to run the program as root\n");
+
         }
     }
 }
@@ -182,14 +156,10 @@ void reboot_()
 
 void lock() 
 {
-    if (d->second_option == X)
-        sleep(d->time);
-    else if (d->second_option == AT)
-        sleep_tal();
-    else if(d->second_option == DETECT)
-        detect();
+    action();
     if (system("xdg-screensaver lock") == -1)
-        puts("Failed :( \nTry to run the program as root");
+        err_("Failed :( \nTry to run the program as root\n");
+
 }
 
 int main(int ac, char **av) 
